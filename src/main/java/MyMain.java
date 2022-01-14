@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class MyMain {
     // Returns the String that shows up latest alphabetically
     // in a normal 1D String array
@@ -7,8 +9,13 @@ public class MyMain {
     //      int x = "apple".compareTo("banana"); // x is negative
     //      int y = "banana".compareTo("apple"); // y is positive
     public static String findLastWord(String[] arr) {
-        // YOUR CODE HERE
-        return "";
+        String lastStr = arr[0];
+        for (int i = 0; i < arr.length; i++) {
+            if(arr[i].compareTo(lastStr)>0){
+                lastStr = arr[i];
+            }
+        }
+        return lastStr;
     }
 
     // Given a 2D array, return an 1D array of the last word
@@ -16,8 +23,12 @@ public class MyMain {
     // You can assume that the matrix will not be empty
     // Hint: use the previous method to help yourself!
     public static String[] findLastWord2D(String[][] mat) {
-        // YOUR CODE HERE
-        return null;
+        String[] lastWordArr = new String[mat.length];
+        for (int row = 0; row < mat.length; row++) {
+            String[] arr = mat[row];
+            lastWordArr[row] = findLastWord(arr);
+        }
+        return lastWordArr;
     }
 
     // Given a 2D array and some column index col
@@ -30,8 +41,14 @@ public class MyMain {
     // Hint: remember how the indexOf() method works?
     // alternatively, consider the contains() method
     public static int appleCounter(String[][] mat, int col) {
-        // YOUR CODE HERE
-        return -1;
+        int counter = 0;
+        for (int row = 0; row < mat.length; row++) {
+            if(mat[row][col].contains("apple")){
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     // Given a 2D array, return the column number corresponding
@@ -41,8 +58,16 @@ public class MyMain {
     // Hint: use your previous method!
     // Hint 2: you might need to loop through the columns!
     public static int findMostAppleColumn(String[][] mat) {
-        // YOUR CODE HERE
-        return -1;
+        int cIndex = 0;
+        int count = -1;
+        for (int i = 0; i < mat[0].length; i++) {
+             int x = appleCounter(mat, i);
+             if(x>count) {
+                 cIndex = i;
+                 count = x;
+             }
+        }
+        return cIndex;
     }
 
 
@@ -70,18 +95,22 @@ public class MyMain {
     //       from top to bottom
 
     public static int[][] pascal(int height) {
-        // YOUR CODE HERE
-        return null;
+        int[][] mat = new int[height][height];
+        for (int i = 0; i < height; i++) {//fills in ones
+            mat[i][i] = 1;
+            mat[i][0] = 1;
+        }
+        if(height<3){
+            return mat;
+        }
+        for (int row = 2; row < height; row++) {
+            for (int col = 1; col < height; col++) {
+                //current position = row above it + row above and left of it
+                mat[row][col] = mat[row-1][col] + mat[row-1][col-1];
+            }
+        }
+        return mat;
     }
-
-
-
-
-
-
-
-
-
 
     // Methods for the homework:
 
@@ -107,12 +136,47 @@ public class MyMain {
     // * do you see any pattern for the row and col indexes for a diagonal?
     // * can you use a for loop that goes through that pattern?
     public static boolean isMagic(int[][] mat) {
-        // YOUR CODE HERE
-        return false;
+        int diag1 = 0;
+        int diag2 = 0;
+        for (int i = 0; i < mat.length; i++) {
+            diag1+=mat[i][i];
+        }
+        for (int i = 1; i < mat.length+1; i++) {
+            diag2+=mat[mat.length-i][mat.length-i];
+        }
+        if(diag1!=diag2) {
+            return false;
+        }
+        for (int row = 0; row < mat.length; row++) { //checks each row
+            int rows = 0;
+            for (int col = 0; col < mat[0].length; col++) {
+                rows+=mat[row][col];
+            }
+            if(rows!=diag1) {
+                return false;
+            }
+        }
+        for (int col = 0; col < mat[0].length; col++) {
+            int cols = 0;
+            for (int row = 0; row < mat.length; row++) {
+                cols+=mat[row][col];
+            }
+            if(cols!=diag1) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     public static void main(String[] args) {
-        // Write some code here to test your methods!
+
+        System.out.println(Arrays.deepToString(pascal(10)));
+        int[][] m1 = {
+                {4, 9, 2},
+                {3, 100, 7},
+                {8, 1, 6}};
+        System.out.println(isMagic(m1));
+
     }
 }
